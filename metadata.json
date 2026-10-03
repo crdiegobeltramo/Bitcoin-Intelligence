@@ -1,0 +1,6 @@
+{
+  "name": "BITCOIN INTELLIGENCE — Blockchain Intelligence & Development OS",
+  "description": "Terminal profesional de inteligencia sobre Bitcoin, copiloto de desarrollo blockchain y Web3, laboratorio de protocolos DeFi y DEX, auditoría de smart contracts y analytics on-chain.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
