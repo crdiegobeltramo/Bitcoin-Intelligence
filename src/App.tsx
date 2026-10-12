@@ -25,6 +25,7 @@ import { CoreWatchView } from './components/views/CoreWatchView';
 import { BipWatchView } from './components/views/BipWatchView';
 import { MiningIntelligenceView } from './components/views/MiningIntelligenceView';
 import { WalletCustodyView } from './components/views/WalletCustodyView';
+import { BitcoinInheritanceView } from './components/views/BitcoinInheritanceView';
 import { QuantumRadarView } from './components/views/QuantumRadarView';
 import { ProtocolExplorerView } from './components/views/ProtocolExplorerView';
 import { LightningLabView } from './components/views/LightningLabView';
@@ -41,6 +42,7 @@ import { OpenZeppelinStudioView } from './components/views/OpenZeppelinStudioVie
 import { SubscriptionsView } from './components/views/SubscriptionsView';
 import { DexLabView } from './components/views/DexLabView';
 import { DeFiIntelligenceView } from './components/views/DeFiIntelligenceView';
+import { DeFiFlashLoanAgentView } from './components/views/DeFiFlashLoanAgentView';
 import { RiskEngineView } from './components/views/RiskEngineView';
 import { AgentOrchestratorView } from './components/views/AgentOrchestratorView';
 import { PortfolioLabView } from './components/views/PortfolioLabView';
@@ -228,6 +230,7 @@ export default function App() {
             <MiningIntelligenceView networkData={networkData} />
           )}
           {currentSection === 'wallet-custody' && <WalletCustodyView />}
+          {currentSection === 'bitcoin-inheritance' && <BitcoinInheritanceView onNavigate={setCurrentSection} />}
           {currentSection === 'quantum-radar' && <QuantumRadarView />}
           {currentSection === 'protocol-explorer' && <ProtocolExplorerView />}
           {currentSection === 'lightning-lab' && <LightningLabView />}
@@ -257,6 +260,7 @@ export default function App() {
           {/* Sistema C */}
           {currentSection === 'dex-lab' && <DexLabView />}
           {currentSection === 'defi-intelligence' && <DeFiIntelligenceView />}
+          {currentSection === 'flash-loan-agent' && <DeFiFlashLoanAgentView />}
           {currentSection === 'risk-engine' && <RiskEngineView />}
 
           {/* Subscriptions & Checkout */}
@@ -287,7 +291,7 @@ export default function App() {
 
           {/* Agents, Research & Portfolio */}
           {currentSection === 'agent-orchestrator' && <AgentOrchestratorView />}
-          {currentSection === 'portfolio-lab' && <PortfolioLabView />}
+          {currentSection === 'portfolio-lab' && <PortfolioLabView marketData={marketData} />}
           {currentSection === 'research-lab' && <ResearchLabView />}
           {currentSection === 'docs' && <DocsView />}
         </main>

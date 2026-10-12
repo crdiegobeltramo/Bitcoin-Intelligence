@@ -3,9 +3,10 @@ import { DEFAULT_PORTFOLIO_ASSETS, PortfolioRiskEngine } from '../../services/po
 import {
   PortfolioPriceService,
   AssetSearchResult,
-  POPULAR_FINANCIAL_ASSETS
+  POPULAR_FINANCIAL_ASSETS,
+  PortfolioExchangeRates
 } from '../../services/portfolio/portfolioPriceService';
-import { PortfolioAsset } from '../../types';
+import { PortfolioAsset, BitcoinMarketData } from '../../types';
 import {
   PieChart as PieChartIcon,
   TrendingUp,
@@ -25,7 +26,8 @@ import {
   Info,
   Sparkles,
   Sliders,
-  RotateCcw
+  RotateCcw,
+  Coins
 } from 'lucide-react';
 import {
   ResponsiveContainer,
@@ -34,6 +36,12 @@ import {
   Cell,
   Tooltip as RechartsTooltip,
 } from 'recharts';
+
+export type BaseCurrency = 'USD' | 'EUR' | 'BTC';
+
+export interface PortfolioLabViewProps {
+  marketData?: BitcoinMarketData | null;
+}
 
 const CATEGORY_COLORS: Record<string, string> = {
   crypto: '#F7931A',
@@ -67,7 +75,7 @@ const ASSET_PIE_COLORS = [
   '#84CC16', // Lime
 ];
 
-export const PortfolioLabView: React.FC = () => {
+export const PortfolioLabView: React.FC<PortfolioLabViewProps> = ({ marketData }) => {
   const [assets, setAssets] = useState<PortfolioAsset[]>(() => {
     try {
       const saved = localStorage.getItem('bitcoin_intel_portfolio_assets');
@@ -77,6 +85,24 @@ export const PortfolioLabView: React.FC = () => {
       }
     } catch {}
     return DEFAULT_PORTFOLIO_ASSETS;
+  });
+
+  // Base Currency Valuation Toggle State (USD, EUR, BTC)
+  const [baseCurrency, setBaseCurrency] = useState<BaseCurrency>(() => {
+    try {
+      const saved = localStorage.getItem('bitcoin_intel_portfolio_currency');
+      if (saved === 'EUR' || saved === 'BTC' || saved === 'USD') return saved;
+    } catch {}
+    return 'USD';
+  });
+
+  // Real-time market exchange rates
+  const [exchangeRates, setExchangeRates] = useState<PortfolioExchangeRates>({
+    btcUsd: marketData?.btcUsd || 82600,
+    eurUsdRate: 0.895,
+    btcEur: (marketData?.btcUsd || 82600) * 0.895,
+    timestamp: 'Inicial',
+    source: 'Mempool.space & CoinGecko',
   });
 
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -97,12 +123,47 @@ export const PortfolioLabView: React.FC = () => {
 
   const searchBoxRef = useRef<HTMLDivElement>(null);
 
-  // Save to localStorage on change
+  // Save assets to localStorage on change
   useEffect(() => {
     try {
       localStorage.setItem('bitcoin_intel_portfolio_assets', JSON.stringify(assets));
     } catch {}
   }, [assets]);
+
+  // Save selected currency to localStorage on change
+  useEffect(() => {
+    try {
+      localStorage.setItem('bitcoin_intel_portfolio_currency', baseCurrency);
+    } catch {}
+  }, [baseCurrency]);
+
+  // Fetch real-time market exchange rates on mount
+  useEffect(() => {
+    let isMounted = true;
+    const loadRates = async () => {
+      try {
+        const rates = await PortfolioPriceService.fetchExchangeRates();
+        if (isMounted) {
+          setExchangeRates(rates);
+        }
+      } catch {}
+    };
+    loadRates();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  // Sync BTC price if marketData prop updates
+  useEffect(() => {
+    if (marketData?.btcUsd && marketData.btcUsd > 0) {
+      setExchangeRates((prev) => ({
+        ...prev,
+        btcUsd: marketData.btcUsd,
+        btcEur: marketData.btcUsd * prev.eurUsdRate,
+      }));
+    }
+  }, [marketData?.btcUsd]);
 
   // Click outside search results listener
   useEffect(() => {
@@ -210,12 +271,16 @@ export const PortfolioLabView: React.FC = () => {
     setTimeout(() => setShowAddSuccess(false), 2500);
   };
 
-  // Refresh all assets in portfolio via live APIs
+  // Refresh all assets in portfolio via live APIs and update base currency exchange rates
   const handleRefreshLivePrices = async () => {
     setIsRefreshing(true);
     try {
-      const refreshed = await PortfolioPriceService.refreshPortfolioLivePrices(assets);
+      const [refreshed, rates] = await Promise.all([
+        PortfolioPriceService.refreshPortfolioLivePrices(assets),
+        PortfolioPriceService.fetchExchangeRates(),
+      ]);
       setAssets(refreshed);
+      setExchangeRates(rates);
       setLastRefreshed(new Date().toLocaleTimeString());
     } catch {
       // ignore
@@ -252,6 +317,30 @@ export const PortfolioLabView: React.FC = () => {
   // Remove asset
   const handleRemoveAsset = (id: string) => {
     setAssets((prev) => prev.filter((a) => a.id !== id));
+  };
+
+  // Dynamic currency rates and conversion functions
+  const currentBtcPrice = exchangeRates.btcUsd > 0 ? exchangeRates.btcUsd : (marketData?.btcUsd || 82600);
+  const currentEurRate = exchangeRates.eurUsdRate > 0 ? exchangeRates.eurUsdRate : 0.895;
+
+  const formatCurrency = (valUsd: number, currency: BaseCurrency = baseCurrency): string => {
+    if (currency === 'USD') {
+      if (valUsd < 10 && valUsd > 0) return `$${valUsd.toFixed(2)}`;
+      return `$${Math.round(valUsd).toLocaleString('en-US')}`;
+    }
+    if (currency === 'EUR') {
+      const eurVal = valUsd * currentEurRate;
+      if (eurVal < 10 && eurVal > 0) return `€${eurVal.toFixed(2)}`;
+      return `€${Math.round(eurVal).toLocaleString('es-ES')}`;
+    }
+    if (currency === 'BTC') {
+      const btcVal = currentBtcPrice > 0 ? valUsd / currentBtcPrice : 0;
+      if (btcVal === 0) return '0.0000 ₿';
+      if (btcVal < 0.0001) return `${btcVal.toFixed(8)} ₿`;
+      if (btcVal < 0.01) return `${btcVal.toFixed(6)} ₿`;
+      return `${btcVal.toFixed(4)} ₿`;
+    }
+    return `$${Math.round(valUsd).toLocaleString('en-US')}`;
   };
 
   // Calculate metrics
@@ -291,11 +380,38 @@ export const PortfolioLabView: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-2.5 flex-wrap">
+          {/* Base Currency Toggle (USD, EUR, BTC) */}
+          <div className="flex items-center p-1 rounded-xl bg-[#080B10] border border-slate-800">
+            <span className="text-[10px] font-mono text-slate-500 uppercase px-2 hidden sm:inline font-semibold">
+              Valuación:
+            </span>
+            {(['USD', 'EUR', 'BTC'] as BaseCurrency[]).map((curr) => {
+              const isSelected = baseCurrency === curr;
+              return (
+                <button
+                  key={curr}
+                  onClick={() => setBaseCurrency(curr)}
+                  className={`px-3 py-1.5 text-xs font-mono font-bold rounded-lg transition-all flex items-center gap-1.5 ${
+                    isSelected
+                      ? 'bg-[#F7931A] text-black shadow-md scale-[1.02]'
+                      : 'text-slate-400 hover:text-white hover:bg-[#1E293B]'
+                  }`}
+                  title={`Ver valuación total y activos en ${curr}`}
+                >
+                  <span className="text-xs font-black">
+                    {curr === 'USD' ? '$' : curr === 'EUR' ? '€' : '₿'}
+                  </span>
+                  <span>{curr}</span>
+                </button>
+              );
+            })}
+          </div>
+
           <button
             onClick={handleRefreshLivePrices}
             disabled={isRefreshing}
             className="flex items-center gap-2 px-3.5 py-2 text-xs font-mono font-bold text-white bg-[#1E293B] hover:bg-[#283548] border border-slate-700 rounded-lg transition-all disabled:opacity-50 shadow-sm"
-            title="Sincronizar precios de todos los activos contra APIs públicas"
+            title="Sincronizar precios de todos los activos y tipos de cambio contra APIs públicas"
           >
             <RefreshCw className={`w-3.5 h-3.5 text-cyan-400 ${isRefreshing ? 'animate-spin' : ''}`} />
             <span>{isRefreshing ? 'Actualizando...' : 'Actualizar Precios en Vivo'}</span>
@@ -312,15 +428,43 @@ export const PortfolioLabView: React.FC = () => {
         </div>
       </div>
 
+      {/* Exchange Rates & Base Valuation Unit Strip */}
+      <div className="p-2.5 rounded-xl bg-[#080B10] border border-slate-800/80 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs font-mono">
+        <div className="flex items-center gap-2 text-slate-300">
+          <Coins className="w-4 h-4 text-[#F7931A]" />
+          <span>
+            Moneda Base Activa: <strong className="text-white">{baseCurrency === 'USD' ? 'Dólar Estadounidense ($ USD)' : baseCurrency === 'EUR' ? 'Euro (€ EUR)' : 'Bitcoin (₿ BTC)'}</strong>
+          </span>
+          <span className="text-[10px] text-slate-500 hidden md:inline">· Valuación total y componentes convertidos</span>
+        </div>
+        <div className="flex items-center gap-2 text-slate-400 text-[11px] flex-wrap">
+          <span>1 BTC = ${Math.round(currentBtcPrice).toLocaleString('en-US')} USD (€{Math.round(currentBtcPrice * currentEurRate).toLocaleString('es-ES')})</span>
+          <span>·</span>
+          <span>1 EUR = ${(1 / currentEurRate).toFixed(3)} USD</span>
+          <span className="text-cyan-400 hidden lg:inline">({exchangeRates.source})</span>
+        </div>
+      </div>
+
       {/* KPI Grid */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
         <div className="p-3.5 rounded-xl bg-[#0A0E17] border border-[#1E293B] space-y-1">
-          <span className="text-[11px] text-slate-400">Valor Total Cartera</span>
-          <div className="text-lg font-mono-nums font-bold text-white">
-            ${metrics.totalValueUsd.toLocaleString()}
+          <div className="flex items-center justify-between text-[11px] text-slate-400">
+            <span>Valor Total Cartera</span>
+            <span className="font-mono text-[10px] font-bold px-1.5 py-0.2 rounded bg-[#F7931A]/10 text-[#F7931A] border border-[#F7931A]/30">
+              {baseCurrency}
+            </span>
           </div>
-          <div className="text-[10px] text-slate-500 font-mono">
-            {assets.length} Activos · USD
+          <div className="text-lg font-mono-nums font-bold text-white">
+            {formatCurrency(metrics.totalValueUsd, baseCurrency)}
+          </div>
+          <div className="text-[10px] text-slate-500 font-mono truncate">
+            {baseCurrency === 'USD' ? (
+              <span>Eq: {formatCurrency(metrics.totalValueUsd, 'EUR')} · {formatCurrency(metrics.totalValueUsd, 'BTC')}</span>
+            ) : baseCurrency === 'EUR' ? (
+              <span>Eq: {formatCurrency(metrics.totalValueUsd, 'USD')} · {formatCurrency(metrics.totalValueUsd, 'BTC')}</span>
+            ) : (
+              <span>Eq: {formatCurrency(metrics.totalValueUsd, 'USD')} · {formatCurrency(metrics.totalValueUsd, 'EUR')}</span>
+            )}
           </div>
         </div>
 
@@ -529,8 +673,13 @@ export const PortfolioLabView: React.FC = () => {
               <div>
                 <span className="text-slate-400">Valor Estimado: </span>
                 <span className="text-[#F7931A] font-bold">
-                  ${Math.round((parseFloat(inputUnits) || 0) * previewPrice).toLocaleString()} USD
+                  {formatCurrency((parseFloat(inputUnits) || 0) * previewPrice, baseCurrency)}
                 </span>
+                {baseCurrency !== 'USD' && (
+                  <span className="text-slate-500 text-[11px] ml-1.5">
+                    (${Math.round((parseFloat(inputUnits) || 0) * previewPrice).toLocaleString()} USD)
+                  </span>
+                )}
               </div>
 
               <div className="text-[10px] text-cyan-400 bg-cyan-950/60 px-2 py-0.5 rounded border border-cyan-800">
@@ -642,9 +791,19 @@ export const PortfolioLabView: React.FC = () => {
                             </span>
                           )}
                         </div>
-                        <div className="flex items-center gap-3 text-[11px] text-slate-400 font-mono mt-0.5">
+                        <div className="flex items-center gap-3 text-[11px] text-slate-400 font-mono mt-0.5 flex-wrap">
                           <span>
                             Precio Spot: ${asset.currentPrice >= 1 ? asset.currentPrice.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : asset.currentPrice.toFixed(5)}
+                            {baseCurrency === 'EUR' && (
+                              <span className="text-slate-300 ml-1">
+                                (€{(asset.currentPrice * currentEurRate >= 1 ? (asset.currentPrice * currentEurRate).toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : (asset.currentPrice * currentEurRate).toFixed(5))})
+                              </span>
+                            )}
+                            {baseCurrency === 'BTC' && (
+                              <span className="text-amber-400/90 ml-1">
+                                ({(asset.currentPrice / currentBtcPrice).toFixed(6)} ₿)
+                              </span>
+                            )}
                           </span>
                           {asset.change24h !== undefined && (
                             <span className={asset.change24h >= 0 ? 'text-emerald-400 font-bold' : 'text-rose-400 font-bold'}>
@@ -658,7 +817,7 @@ export const PortfolioLabView: React.FC = () => {
                       </div>
                     </div>
 
-                    {/* Units input & Total USD value */}
+                    {/* Units input & Total value in base currency */}
                     <div className="flex items-center gap-3 sm:gap-4 font-mono-nums self-end sm:self-auto">
                       <div className="flex items-center gap-1.5">
                         <span className="text-slate-400 text-[11px]">Unidades:</span>
@@ -672,10 +831,15 @@ export const PortfolioLabView: React.FC = () => {
                         />
                       </div>
 
-                      <div className="text-right min-w-[100px]">
+                      <div className="text-right min-w-[110px]">
                         <div className="text-white font-bold text-sm">
-                          ${Math.round(asset.valueUsd).toLocaleString()}
+                          {formatCurrency(asset.valueUsd, baseCurrency)}
                         </div>
+                        {baseCurrency !== 'USD' && (
+                          <div className="text-[10px] text-slate-500">
+                            ${Math.round(asset.valueUsd).toLocaleString()} USD
+                          </div>
+                        )}
                         <div className="text-slate-400 text-[11px]">
                           {assetShare.toFixed(1)}% de la cartera
                         </div>
@@ -755,7 +919,14 @@ export const PortfolioLabView: React.FC = () => {
                           return (
                             <div className="p-2.5 rounded-lg bg-[#0A0E17] border border-slate-700 shadow-xl font-mono text-xs">
                               <span className="text-white font-bold">{data.name}: </span>
-                              <span className="text-amber-300 font-bold">${Math.round(data.value).toLocaleString()} USD</span>
+                              <span className="text-amber-300 font-bold">
+                                {formatCurrency(data.value, baseCurrency)}
+                              </span>
+                              {baseCurrency !== 'USD' && (
+                                <div className="text-[10px] text-slate-400">
+                                  ${Math.round(data.value).toLocaleString()} USD
+                                </div>
+                              )}
                               <div className="text-slate-400 text-[10px] mt-0.5">
                                 Asignación: {data.percent}%
                               </div>

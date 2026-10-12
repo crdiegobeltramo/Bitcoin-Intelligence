@@ -22,7 +22,8 @@ import {
   Calendar,
   ExternalLink,
   ChevronRight,
-  Globe
+  Globe,
+  KeyRound
 } from 'lucide-react';
 import { TOP_INTELLIGENCE_EVENTS } from '../../services/dataProviders/intelligenceScoreProvider';
 
@@ -82,6 +83,13 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           >
             <span>Copiloto de Desarrollo</span>
             <ArrowUpRight className="w-3.5 h-3.5" />
+          </button>
+          <button
+            onClick={() => onNavigate('bitcoin-inheritance')}
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-[#F7931A] bg-[#0F172A] hover:bg-[#1E293B] border border-[#F7931A]/30 rounded-lg transition-colors"
+          >
+            <KeyRound className="w-3.5 h-3.5" />
+            <span>Inheritance & Timelocks</span>
           </button>
         </div>
       </div>

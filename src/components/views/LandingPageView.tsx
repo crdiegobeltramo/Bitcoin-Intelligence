@@ -26,7 +26,9 @@ import {
   Copy,
   Check,
   FileCode,
-  Shield
+  Shield,
+  ArrowUpRight,
+  KeyRound
 } from 'lucide-react';
 
 interface LandingPageViewProps {
@@ -234,6 +236,13 @@ contract VaultSecurityGuard is AccessControl, ReentrancyGuard {
                 <span>Abrir Terminal Principal</span>
               </button>
               <button
+                onClick={() => onNavigate('bitcoin-inheritance')}
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-[#0F172A] hover:bg-[#1E293B] border border-[#F7931A]/40 text-[#F7931A] text-xs font-mono font-bold transition-all shadow-sm"
+              >
+                <KeyRound className="w-4 h-4" />
+                <span>Inheritance & Timelocks</span>
+              </button>
+              <button
                 onClick={onOpenAuthModal}
                 className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-[#121922] hover:bg-[#1E293B] border border-slate-700 text-white text-xs font-mono transition-colors"
               >
@@ -244,23 +253,94 @@ contract VaultSecurityGuard is AccessControl, ReentrancyGuard {
           </div>
         </div>
 
-        {/* Hero Bottom Bar */}
-        <div className="p-4 sm:p-5 bg-[#0C1322] border-t border-[#1E293B] flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-slate-400 font-mono-nums">
-          <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-white font-semibold">Autor: Diego Eduardo Beltramo</span>
-            <span className="text-slate-600">·</span>
-            <span className="text-slate-400">Contador Público · Asesor Idóneo en Mercado de Capitales · Full Stack</span>
+        {/* Hero Bottom Bar: Author & Protocol Quick Links */}
+        <div className="p-4 sm:p-5 bg-[#0C1322] border-t border-[#1E293B] flex flex-col gap-3 text-xs font-mono-nums">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-slate-400">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="text-white font-semibold">Autor: Diego Eduardo Beltramo</span>
+              <span className="text-slate-600">·</span>
+              <span className="text-slate-400">Contador Público · Asesor Idóneo en Mercado de Capitales · Full Stack</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <a
+                href="https://diegobeltramobitcoin.netlify.app/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-[#F7931A]/15 hover:bg-[#F7931A]/25 border border-[#F7931A]/40 text-[#F7931A] text-xs font-mono font-semibold transition-all hover:scale-105"
+              >
+                <span>diegobeltramobitcoin.netlify.app</span>
+                <ExternalLink className="w-3 h-3" />
+              </a>
+            </div>
           </div>
-          <div className="flex items-center gap-3">
-            <a
-              href="https://diegobeltramobitcoin.netlify.app/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-[#F7931A]/15 hover:bg-[#F7931A]/25 border border-[#F7931A]/40 text-[#F7931A] text-xs font-mono font-semibold transition-all hover:scale-105"
-            >
-              <span>diegobeltramobitcoin.netlify.app</span>
-              <ExternalLink className="w-3 h-3" />
-            </a>
+
+          {/* Quick Access Protocol Buttons Strip */}
+          <div className="pt-2 border-t border-slate-800/80 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+            <span className="text-[11px] font-mono text-slate-400 uppercase tracking-wider flex items-center gap-1.5 font-semibold">
+              <Globe className="w-3.5 h-3.5 text-cyan-400" />
+              <span>Accesos Directos Externos:</span>
+            </span>
+            <div className="flex items-center gap-2 flex-wrap">
+              <a
+                href="https://arkm.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#0F172A] hover:bg-[#1E293B] border border-rose-900/60 hover:border-rose-500 text-rose-300 hover:text-white text-xs font-mono font-medium transition-all hover:scale-105 shadow-sm"
+                title="Abrir Arkham Intelligence (arkm.com)"
+              >
+                <span className="w-2 h-2 rounded-full bg-rose-400" />
+                <span>Arkham (arkm.com)</span>
+                <ExternalLink className="w-3 h-3" />
+              </a>
+
+              <a
+                href="https://app.uniswap.org/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#0F172A] hover:bg-[#1E293B] border border-pink-900/60 hover:border-pink-500 text-pink-300 hover:text-white text-xs font-mono font-medium transition-all hover:scale-105 shadow-sm"
+                title="Abrir Uniswap DEX (app.uniswap.org)"
+              >
+                <span className="w-2 h-2 rounded-full bg-pink-400" />
+                <span>Uniswap (app.uniswap.org)</span>
+                <ExternalLink className="w-3 h-3" />
+              </a>
+
+              <a
+                href="https://aave.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#0F172A] hover:bg-[#1E293B] border border-cyan-900/60 hover:border-cyan-500 text-cyan-300 hover:text-white text-xs font-mono font-medium transition-all hover:scale-105 shadow-sm"
+                title="Abrir Aave Protocol (aave.com)"
+              >
+                <span className="w-2 h-2 rounded-full bg-cyan-400" />
+                <span>Aave (aave.com)</span>
+                <ExternalLink className="w-3 h-3" />
+              </a>
+
+              <a
+                href="https://pro.aave.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#0F172A] hover:bg-[#1E293B] border border-purple-900/60 hover:border-purple-500 text-purple-300 hover:text-white text-xs font-mono font-medium transition-all hover:scale-105 shadow-sm"
+                title="Abrir Aave Pro Institucional (pro.aave.com)"
+              >
+                <span className="w-2 h-2 rounded-full bg-purple-400" />
+                <span>Aave Pro (pro.aave.com)</span>
+                <ExternalLink className="w-3 h-3" />
+              </a>
+
+              <a
+                href="https://defillama.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#0F172A] hover:bg-[#1E293B] border border-emerald-900/60 hover:border-emerald-500 text-emerald-300 hover:text-white text-xs font-mono font-medium transition-all hover:scale-105 shadow-sm"
+                title="Abrir DefiLlama (defillama.com) - TVL & Métricas DeFi"
+              >
+                <span className="w-2 h-2 rounded-full bg-emerald-400" />
+                <span>DefiLlama (defillama.com)</span>
+                <ExternalLink className="w-3 h-3" />
+              </a>
+            </div>
           </div>
         </div>
       </section>
@@ -498,6 +578,173 @@ contract VaultSecurityGuard is AccessControl, ReentrancyGuard {
                 <ArrowRight className="w-3.5 h-3.5" />
               </button>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ============================================================
+          TERMINALES EXTERNAS & PROTOCOLOS DEFI / ON-CHAIN
+          (Arkham Intelligence, Uniswap DEX, Aave Protocol, Aave Pro)
+         ============================================================ */}
+      <section className="p-6 sm:p-8 rounded-2xl bg-[#0A0E17] border border-[#1E293B] space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#1E293B] pb-4">
+          <div>
+            <div className="flex items-center gap-2 text-xs font-mono text-cyan-400 font-semibold uppercase tracking-wider">
+              <ExternalLink className="w-4 h-4 text-cyan-400" />
+              <span>TERMINALES EXTERNAS & PROTOCOLOS DEFI</span>
+            </div>
+            <h2 className="text-2xl font-bold text-white mt-1">
+              Accesos Directos a Infraestructura On-Chain y Mercados DeFi
+            </h2>
+            <p className="text-xs text-slate-400 mt-1">
+              Navega directamente a las plataformas líderes en análisis forense de billeteras, liquidez descentralizada, lending y mercados permisionados institucionales.
+            </p>
+          </div>
+          <span className="text-xs text-slate-500 font-mono-nums self-start sm:self-auto">
+            5 Protocolos Clave Conectados
+          </span>
+        </div>
+
+        {/* 5 Protocol Direct Access Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+          {/* Card 1: Arkham Intelligence */}
+          <div className="p-5 rounded-xl bg-[#0D131F] border border-slate-800 hover:border-rose-500/60 transition-all flex flex-col justify-between group space-y-4 hover:shadow-lg hover:shadow-rose-950/20">
+            <div className="space-y-2.5">
+              <div className="flex items-center justify-between">
+                <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-rose-950/80 text-rose-300 border border-rose-800">
+                  ON-CHAIN INTEL
+                </span>
+                <span className="text-[11px] font-mono text-slate-500">arkm.com</span>
+              </div>
+              <h3 className="text-base font-bold text-white group-hover:text-rose-400 transition-colors flex items-center justify-between">
+                <span>Arkham Intelligence</span>
+                <ArrowUpRight className="w-4 h-4 text-slate-500 group-hover:text-rose-400 transition-colors" />
+              </h3>
+              <p className="text-xs text-slate-400 leading-relaxed">
+                Plataforma de inteligencia on-chain impulsada por Ultra AI para desanonimización de direcciones, rastreo de ballenas, flujos de fondos y balance de entidades.
+              </p>
+            </div>
+            <a
+              href="https://arkm.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full py-2.5 px-3 rounded-lg bg-rose-950/60 hover:bg-rose-900 border border-rose-800 text-rose-200 text-xs font-mono font-bold transition-all flex items-center justify-center gap-2 group-hover:scale-[1.02] shadow-sm"
+            >
+              <span>Acceso directo a arkm.com</span>
+              <ExternalLink className="w-3.5 h-3.5" />
+            </a>
+          </div>
+
+          {/* Card 2: Uniswap DEX */}
+          <div className="p-5 rounded-xl bg-[#0D131F] border border-slate-800 hover:border-pink-500/60 transition-all flex flex-col justify-between group space-y-4 hover:shadow-lg hover:shadow-pink-950/20">
+            <div className="space-y-2.5">
+              <div className="flex items-center justify-between">
+                <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-pink-950/80 text-pink-300 border border-pink-800">
+                  DEX AMM
+                </span>
+                <span className="text-[11px] font-mono text-slate-500">app.uniswap.org</span>
+              </div>
+              <h3 className="text-base font-bold text-white group-hover:text-pink-400 transition-colors flex items-center justify-between">
+                <span>Uniswap App</span>
+                <ArrowUpRight className="w-4 h-4 text-slate-500 group-hover:text-pink-400 transition-colors" />
+              </h3>
+              <p className="text-xs text-slate-400 leading-relaxed">
+                El exchange descentralizado de referencia global para swap e intercambio instantáneo de tokens, piscinas de liquidez concentrada (v3) y enrutador UniswapX.
+              </p>
+            </div>
+            <a
+              href="https://app.uniswap.org/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full py-2.5 px-3 rounded-lg bg-pink-950/60 hover:bg-pink-900 border border-pink-800 text-pink-200 text-xs font-mono font-bold transition-all flex items-center justify-center gap-2 group-hover:scale-[1.02] shadow-sm"
+            >
+              <span>Acceso directo a app.uniswap.org</span>
+              <ExternalLink className="w-3.5 h-3.5" />
+            </a>
+          </div>
+
+          {/* Card 3: Aave Protocol */}
+          <div className="p-5 rounded-xl bg-[#0D131F] border border-slate-800 hover:border-cyan-500/60 transition-all flex flex-col justify-between group space-y-4 hover:shadow-lg hover:shadow-cyan-950/20">
+            <div className="space-y-2.5">
+              <div className="flex items-center justify-between">
+                <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-cyan-950/80 text-cyan-300 border border-cyan-800">
+                  DEFI LENDING
+                </span>
+                <span className="text-[11px] font-mono text-slate-500">aave.com</span>
+              </div>
+              <h3 className="text-base font-bold text-white group-hover:text-cyan-400 transition-colors flex items-center justify-between">
+                <span>Aave Protocol</span>
+                <ArrowUpRight className="w-4 h-4 text-slate-500 group-hover:text-cyan-400 transition-colors" />
+              </h3>
+              <p className="text-xs text-slate-400 leading-relaxed">
+                Protocolo descentralizado de liquidez y mercado de crédito no custodial para depositar colateral, generar rendimientos y solicitar préstamos o Flash Loans.
+              </p>
+            </div>
+            <a
+              href="https://aave.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full py-2.5 px-3 rounded-lg bg-cyan-950/60 hover:bg-cyan-900 border border-cyan-800 text-cyan-200 text-xs font-mono font-bold transition-all flex items-center justify-center gap-2 group-hover:scale-[1.02] shadow-sm"
+            >
+              <span>Acceso directo a aave.com</span>
+              <ExternalLink className="w-3.5 h-3.5" />
+            </a>
+          </div>
+
+          {/* Card 4: Aave Pro */}
+          <div className="p-5 rounded-xl bg-[#0D131F] border border-slate-800 hover:border-purple-500/60 transition-all flex flex-col justify-between group space-y-4 hover:shadow-lg hover:shadow-purple-950/20">
+            <div className="space-y-2.5">
+              <div className="flex items-center justify-between">
+                <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-purple-950/80 text-purple-300 border border-purple-800">
+                  INSTITUTIONAL
+                </span>
+                <span className="text-[11px] font-mono text-slate-500">pro.aave.com</span>
+              </div>
+              <h3 className="text-base font-bold text-white group-hover:text-purple-400 transition-colors flex items-center justify-between">
+                <span>Aave Pro</span>
+                <ArrowUpRight className="w-4 h-4 text-slate-500 group-hover:text-purple-400 transition-colors" />
+              </h3>
+              <p className="text-xs text-slate-400 leading-relaxed">
+                Mercados permisionados de Aave diseñados para inversores institucionales, fondos y tesorerías corporativas con verificación KYC/AML y piscinas segregadas.
+              </p>
+            </div>
+            <a
+              href="https://pro.aave.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full py-2.5 px-3 rounded-lg bg-purple-950/60 hover:bg-purple-900 border border-purple-800 text-purple-200 text-xs font-mono font-bold transition-all flex items-center justify-center gap-2 group-hover:scale-[1.02] shadow-sm"
+            >
+              <span>Acceso directo a pro.aave.com</span>
+              <ExternalLink className="w-3.5 h-3.5" />
+            </a>
+          </div>
+
+          {/* Card 5: DefiLlama */}
+          <div className="p-5 rounded-xl bg-[#0D131F] border border-slate-800 hover:border-emerald-500/60 transition-all flex flex-col justify-between group space-y-4 hover:shadow-lg hover:shadow-emerald-950/20">
+            <div className="space-y-2.5">
+              <div className="flex items-center justify-between">
+                <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-950/80 text-emerald-300 border border-emerald-800">
+                  DEFI & TVL ANALYTICS
+                </span>
+                <span className="text-[11px] font-mono text-slate-500">defillama.com</span>
+              </div>
+              <h3 className="text-base font-bold text-white group-hover:text-emerald-400 transition-colors flex items-center justify-between">
+                <span>DefiLlama</span>
+                <ArrowUpRight className="w-4 h-4 text-slate-500 group-hover:text-emerald-400 transition-colors" />
+              </h3>
+              <p className="text-xs text-slate-400 leading-relaxed">
+                El mayor agregador open-source de métricas DeFi: Total Value Locked (TVL), volúmenes de DEXs, rendimientos de pools (yields), comisiones, tesorerías y liquidaciones.
+              </p>
+            </div>
+            <a
+              href="https://defillama.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full py-2.5 px-3 rounded-lg bg-emerald-950/60 hover:bg-emerald-900 border border-emerald-800 text-emerald-200 text-xs font-mono font-bold transition-all flex items-center justify-center gap-2 group-hover:scale-[1.02] shadow-sm"
+            >
+              <span>Acceso directo a defillama.com</span>
+              <ExternalLink className="w-3.5 h-3.5" />
+            </a>
           </div>
         </div>
       </section>

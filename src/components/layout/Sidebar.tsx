@@ -27,7 +27,8 @@ import {
   ShieldAlert,
   BarChart3,
   Globe,
-  ExternalLink
+  ExternalLink,
+  Clock
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -67,6 +68,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         { id: 'bip-watch', label: 'BIP Watch (Propuestas)', icon: Layers },
         { id: 'mining-intelligence', label: 'Minería & Halving', icon: Cpu },
         { id: 'wallet-custody', label: 'Billeteras & Custodia', icon: Key },
+        { id: 'bitcoin-inheritance', label: 'Inheritance & Timelocks', icon: Clock },
         { id: 'quantum-radar', label: 'Radar Post-Cuántica', icon: Atom },
         { id: 'protocol-explorer', label: 'Explorador UTXO & Script', icon: Boxes },
         { id: 'lightning-lab', label: 'Lightning Network Lab', icon: Zap },
@@ -92,6 +94,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       items: [
         { id: 'dex-lab', label: 'DEX AMM Simulator (x*y=k)', icon: Layers },
         { id: 'defi-intelligence', label: 'DeFi Protocols & Lending', icon: Lock },
+        { id: 'flash-loan-agent', label: 'Flash Loan Agent (Arbitraje)', icon: Zap },
         { id: 'risk-engine', label: 'DeFi Risk Engine (8 Pilares)', icon: Shield },
       ],
     },

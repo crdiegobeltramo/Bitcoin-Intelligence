@@ -12,7 +12,9 @@ import {
   BookOpen,
   ArrowRight,
   X,
-  Compass
+  Compass,
+  Zap,
+  KeyRound
 } from 'lucide-react';
 
 interface CommandPaletteProps {
@@ -40,6 +42,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
   const commands: CommandItem[] = [
     { id: 'c-landing', title: 'Landing Page Interactiva & Manifiesto', category: 'Plataforma', section: 'landing', icon: Compass, hint: 'Framework B.I.T.C.O.I.N., Pilares Web3, Libros' },
     { id: 'c-terminal', title: 'Abrir Bitcoin Intelligence Terminal', category: 'Bitcoin', section: 'dashboard', icon: Activity, hint: 'BTC Spot, Hashrate, Mempool' },
+    { id: 'c-inheritance', title: 'Bitcoin Inheritance & Timelock Planner', category: 'Bitcoin', section: 'bitcoin-inheritance', icon: KeyRound, hint: 'Herencia no custodial, Miniscript, CLTV, CSV, PSBT, 3 Modalidades' },
     { id: 'c-onchain', title: 'Métricas On-Chain & Correlaciones (14 Fuentes)', category: 'Bitcoin', section: 'onchain-analytics', icon: Activity, hint: 'LookIntoBitcoin, CryptoQuant, BitBo, NodeCharts, Mataf, Stenox' },
     { id: 'c-daily', title: 'Generar Daily Intelligence Report', category: 'Bitcoin', section: 'daily-intelligence', icon: FileText, hint: 'BIS Score y Top Eventos' },
     { id: 'c-bip', title: 'Explorar BIP Watch & Propuestas', category: 'Bitcoin Core', section: 'bip-watch', icon: Layers, hint: 'BIP 340, 341, 119, 360' },
@@ -53,6 +56,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
     { id: 'c-admin', title: 'Panel de Administrador & Tesorería (Diego Beltramo)', category: 'Administración', section: 'admin', icon: Shield, hint: 'Editar BTC, Lightning, MP Developers, Alcances' },
     { id: 'c-dex', title: 'Simulador de AMM & DEX (x · y = k)', category: 'DeFi', section: 'dex-lab', icon: Layers, hint: 'Slippage, Impermanent Loss' },
     { id: 'c-defi', title: 'Protocolos DeFi & Health Factor', category: 'DeFi', section: 'defi-intelligence', icon: Shield, hint: 'Lending, Borrowing, Flash Loans' },
+    { id: 'c-flash-loan', title: 'Agente Autónomo de Arbitraje DeFi (Flash Loans)', category: 'DeFi', section: 'flash-loan-agent', icon: Zap, hint: 'PancakeSwap, Balancer, Aave, 14 reglas de riesgo' },
     { id: 'c-agents', title: 'Consola de AI Multi-Agentes', category: 'Agentes', section: 'agent-orchestrator', icon: Compass, hint: '10 agentes especializados' },
     { id: 'c-portfolio', title: 'Analizador de Cartera Cuantitativa (VaR/Sharpe)', category: 'Finanzas', section: 'portfolio-lab', icon: PieChart, hint: 'Sortino, CAGR, Max Drawdown' },
     { id: 'c-research', title: 'Laboratorio de Investigación Factual', category: 'Investigación', section: 'research-lab', icon: BookOpen, hint: 'Fact vs Opinion' },

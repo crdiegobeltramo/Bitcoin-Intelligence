@@ -15,6 +15,7 @@ export type NavigationSection =
   | 'bip-watch'
   | 'mining-intelligence'
   | 'wallet-custody'
+  | 'bitcoin-inheritance'
   | 'quantum-radar'
   | 'protocol-explorer'
   | 'cryptography-lab'
@@ -33,6 +34,7 @@ export type NavigationSection =
   // Sistema C: DeFi & DEX Lab
   | 'dex-lab'
   | 'defi-intelligence'
+  | 'flash-loan-agent'
   | 'risk-engine'
   // Intelligence, Agents & Research
   | 'agent-orchestrator'

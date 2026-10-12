@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ShieldAlert, Zap, Lock, ArrowRight, Activity, Percent, AlertTriangle } from 'lucide-react';
+import { ShieldAlert, Zap, Lock, ArrowRight, Activity, Percent, AlertTriangle, ExternalLink } from 'lucide-react';
 
 export const DeFiIntelligenceView: React.FC = () => {
   const [collateralBtc, setCollateralBtc] = useState<number>(2.0); // 2 WBTC
@@ -31,6 +31,20 @@ export const DeFiIntelligenceView: React.FC = () => {
           <p className="text-xs text-slate-400">
             Simulador de factor de salud, colaterales, liquidaciones en cascada y dinámica de préstamos relámpago (Flash Loans).
           </p>
+        </div>
+
+        <div className="flex items-center gap-2 flex-wrap">
+          <a
+            href="https://defillama.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#0F172A] hover:bg-[#1E293B] border border-emerald-800 hover:border-emerald-500 text-emerald-300 hover:text-white text-xs font-mono font-bold transition-all shadow-sm hover:scale-105"
+            title="Abrir DefiLlama (defillama.com) - TVL, Yields & DeFi Protocol Data"
+          >
+            <span className="w-2 h-2 rounded-full bg-emerald-400" />
+            <span>DefiLlama (defillama.com)</span>
+            <ExternalLink className="w-3.5 h-3.5" />
+          </a>
         </div>
       </div>
 

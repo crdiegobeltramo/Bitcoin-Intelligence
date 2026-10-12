@@ -1,0 +1,97 @@
+/**
+ * BITCOIN INHERITANCE — WALLET COMPATIBILITY & SELF-CUSTODY MATRIX
+ * Strict non-custodial checks. Only Bitcoin-native hardware & coordinator wallets are approved.
+ */
+
+import { WalletCompatibility } from './types';
+
+export const BITCOIN_WALLETS_COMPATIBILITY: WalletCompatibility[] = [
+  {
+    id: 'sparrow',
+    name: 'Sparrow Wallet (Desktop)',
+    isCompatible: true,
+    supportsMiniscript: true,
+    supportsDescriptors: true,
+    supportsPSBT: true,
+    supportsTaproot: true,
+    recommendedFirmware: 'v1.9.0 o superior',
+    warningNote: 'Plataforma de referencia para coordinar y auditar PSBTs sucesorios y descriptores WSH.',
+  },
+  {
+    id: 'bitcoincore',
+    name: 'Bitcoin Core Full Node (CLI / GUI)',
+    isCompatible: true,
+    supportsMiniscript: true,
+    supportsDescriptors: true,
+    supportsPSBT: true,
+    supportsTaproot: true,
+    recommendedFirmware: 'v26.0 o superior (v28.0 recomendado con cluster mempool)',
+    warningNote: 'Soporte nativo absoluto de importdescriptors, decodepsbt y difusión RPC autónoma.',
+  },
+  {
+    id: 'coldcard',
+    name: 'Coldcard (Mk4 / Q) Hardware Wallet',
+    isCompatible: true,
+    supportsMiniscript: true,
+    supportsDescriptors: true,
+    supportsPSBT: true,
+    supportsTaproot: true,
+    recommendedFirmware: 'Edge / Firmware 5.2.0+',
+    warningNote: 'Excelente para air-gapped signing vía MicroSD o NFC de políticas WSH y multisig.',
+  },
+  {
+    id: 'jade',
+    name: 'Blockstream Jade Hardware Wallet',
+    isCompatible: true,
+    supportsMiniscript: true,
+    supportsDescriptors: true,
+    supportsPSBT: true,
+    supportsTaproot: true,
+    recommendedFirmware: 'v1.0.28+',
+    warningNote: 'Soporte completo de PSBT vía cámara QR / air-gapped y descriptores multisig.',
+  },
+  {
+    id: 'keystone',
+    name: 'Keystone 3 Pro Hardware Wallet',
+    isCompatible: true,
+    supportsMiniscript: true,
+    supportsDescriptors: true,
+    supportsPSBT: true,
+    supportsTaproot: true,
+    recommendedFirmware: 'BTC-Only Firmware v1.3+',
+    warningNote: 'Air-gapped QR con pantalla táctil amplia para inspeccionar salidas y timelocks antes de firmar.',
+  },
+  {
+    id: 'specter',
+    name: 'Specter Desktop',
+    isCompatible: true,
+    supportsMiniscript: true,
+    supportsDescriptors: true,
+    supportsPSBT: true,
+    supportsTaproot: true,
+    recommendedFirmware: 'v2.0.4+',
+    warningNote: 'Coordinador multisig open-source con soporte de descriptores y hardware wallets.',
+  },
+  {
+    id: 'electrum',
+    name: 'Electrum Bitcoin Wallet',
+    isCompatible: true,
+    supportsMiniscript: false,
+    supportsDescriptors: true,
+    supportsPSBT: true,
+    supportsTaproot: true,
+    recommendedFirmware: 'v4.5.0+',
+    warningNote: 'Soporta PSBT estándar, pero su compilador nativo de Miniscript WSH complejo es limitado. Se recomienda Sparrow para políticas avanzadas.',
+  },
+  {
+    id: 'incompatible_evm',
+    name: 'MetaMask / Trust Wallet / Phantom (INCOMPATIBLES)',
+    isCompatible: false,
+    supportsMiniscript: false,
+    supportsDescriptors: false,
+    supportsPSBT: false,
+    supportsTaproot: false,
+    warningNote:
+      'PELIGRO: Estas wallets son orientadas a cuentas EVM o Solana. NO soportan el modelo UTXO de Bitcoin, ni PSBT (BIP 174), ni descriptores de salida, ni Miniscript. NUNCA las utilice para planificación sucesoria de Bitcoin.',
+  },
+];
